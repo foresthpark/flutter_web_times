@@ -33,7 +33,11 @@ dependencies:
   url_launcher:
   flutter_dotenv:
   flutter_staggered_animations:
-  google_fonts: ^1.0.0
+  google_fonts: ^1.1.0
+  build_runner:
+  build_web_compilers: ^2.11.0
+  convex_bottom_bar:
+  font_awesome_flutter:
 
 
 

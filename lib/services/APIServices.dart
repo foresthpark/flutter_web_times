@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 class APIService {
   static final String _baseUrl = 'api.nytimes.com';
   static final String _apiKey = DotEnv().env['API_KEY'];
+  static final List<String> _categories = ['home', 'arts', 'sciences', 'world'];
 
   Future<dynamic> fetchArticlesBySection(String section) async {
     Map<String, String> parameters = {
@@ -19,11 +20,8 @@ class APIService {
         Uri.https(_baseUrl, '/svc/topstories/v2/$section.json', parameters);
 
     try {
-      List<Article> articles = [];
       http.Response response = await http.get(uri);
       Map<String, dynamic> data = json.decode(response.body);
-      data['results']
-          .forEach((articleMap) => articles.add(Article.fromJson(articleMap)));
 
       return data;
     } catch (err) {

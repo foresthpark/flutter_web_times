@@ -3,7 +3,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertimesweb/pages/home_page.dart';
 
 Future<void> main() async {
+  print("Main go");
   await DotEnv().load('.env');
+  print("Loaded DotEnv");
   runApp(MyApp());
 }
 
@@ -13,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Times',
+      title: 'Flutter Web - New York Times',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,

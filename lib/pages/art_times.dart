@@ -1,56 +1,61 @@
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertimesweb/helpers/responsive_helper.dart';
-import 'package:fluttertimesweb/models/Article.dart';
-import 'package:fluttertimesweb/pages/art_times.dart';
-import 'package:fluttertimesweb/pages/home_times.dart';
-import 'package:fluttertimesweb/pages/science_times.dart';
-import 'package:fluttertimesweb/pages/tech_times.dart';
-import 'package:fluttertimesweb/pages/world_times.dart';
 import 'package:fluttertimesweb/services/APIServices.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class HomePage extends StatefulWidget {
-  HomePage({Key key}) : super(key: key);
-
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
-  final List<Widget> _screenList = [
-    HomeTimes(),
-    TechTimes(),
-    ScienceTimes(),
-    WorldTimes(),
-    ArtTimes(),
-  ];
-
+class ArtTimes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
 
-    return Scaffold(
-      bottomNavigationBar: ConvexAppBar(
-        items: [
-          TabItem(icon: Icons.home, title: 'Home'),
-          TabItem(icon: Icons.memory, title: 'Technology'),
-          TabItem(icon: Icons.network_check, title: 'Science'),
-          TabItem(icon: Icons.public, title: 'World'),
-          TabItem(icon: Icons.color_lens, title: 'Art'),
-        ],
-        initialActiveIndex: _currentIndex, //optional, default as 0
-        onTap: (int i) {
-          setState(() {
-            _currentIndex = i;
-          });
-          print(_currentIndex);
-        },
+    return SingleChildScrollView(
+      child: Container(
+        child: FutureBuilder(
+          future: _fetchArticles(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+              case ConnectionState.waiting:
+                return Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('Loading...'),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      CircularProgressIndicator(),
+                    ],
+                  ),
+                );
+              default:
+                if (snapshot.hasError)
+                  return new Text('Error: ${snapshot.error}');
+                else
+                  return Column(
+                    children: <Widget>[
+                      SizedBox(height: 80.0),
+                      Center(
+                        child: Text(
+                          'The New York Times\nTop Art Articles',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.tinos(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.5,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 30.0),
+                      createGridView(context, snapshot, mediaQuery),
+                    ],
+                  );
+            }
+          },
+        ),
       ),
-      body: _screenList[_currentIndex],
     );
   }
 
